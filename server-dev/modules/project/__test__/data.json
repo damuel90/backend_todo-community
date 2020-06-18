@@ -1,0 +1,68 @@
+[   
+    [
+        {
+            "_id" : "5ee6eee778f75216a8452a07",
+            "fullName" : "alejandro",
+            "email" : "damuel@email.com",
+            "password" : "$2b$10$evfRAqDJsmm6uxggGY/sVu9UetV/.65NY38wiYfc0F3d.jK6xYbY.",
+            "avatar" : "https://res.cloudinary.com/dhrlxk9ew/image/upload/v1592193227/e2e96jbmlko6uhxdo3zt.jpg",
+            "createdAt" : "2020-06-15T03:45:43.325Z",
+            "updatedAt" : "2020-06-15T03:55:07.006Z",
+            "__v" : 0
+        },
+        {
+            "_id" : "5ee6fd379107cf1f84a43945",
+            "fullName" : "mario bross",
+            "email" : "mabross@email.com",
+            "password" : "$2b$10$x/Dz0R8f9nilUtXeeRxXteu0lEnWKSxX0B1XYaXMYzmCD2HGuzSRO",
+            "createdAt" : "2020-06-15T04:46:47.884Z",
+            "updatedAt" : "2020-06-15T04:46:47.884Z",
+            "__v" : 0
+        },
+        {
+            "_id" : "5ee819008cf8f01d644c402d",
+            "fullName" : "maria perez",
+            "email" : "mari@email.com",
+            "password" : "$2b$10$Z4DaPSO//VbrOnu5STKVs.GZ0eiEAEzRrVzUvBk1vGPdF1z1xsrce",
+            "createdAt" : "2020-06-16T00:57:36.638Z",
+            "updatedAt" : "2020-06-16T00:57:36.638Z",
+            "__v" : 0
+        }
+    ],
+    {
+        "_id" : "5ee6f54c9b64ba1a144be9d0",
+        "managers" : [ 
+            "5ee6eee778f75216a8452a07"
+        ],
+        "collaborators" : [ 
+            "5ee6fd379107cf1f84a43945"
+        ],
+        "name" : "marketplace: motores ventas",
+        "type" : "private",
+        "creator" : "5ee6eee778f75216a8452a07",
+        "createdAt" : "2020-06-15T04:13:00.653Z",
+        "updatedAt" : "2020-06-16T00:06:37.162Z",
+        "__v" : 0
+    },
+    {
+        "_id" : "5ee7162c7624d215d8955eb1",
+        "state" : "accepted",
+        "project" : "5ee6f54c9b64ba1a144be9d0",
+        "emitter" : "5ee6eee778f75216a8452a07",
+        "receiver" : "5ee6fd379107cf1f84a43945",
+        "createdAt" : "2020-06-15T06:33:16.342Z",
+        "updatedAt" : "2020-06-15T22:10:56.193Z",
+        "__v" : 0
+    },
+    {
+        "_id" : "5ee821e5bedfc20518d8bfe5",
+        "completed" : false,
+        "title" : "hacer los mockup",
+        "description" : "diseño de la interfaz de todas views",
+        "project" : "5ee6f54c9b64ba1a144be9d0",
+        "creator" : "5ee6eee778f75216a8452a07",
+        "createdAt" : "2020-06-16T01:35:33.891Z",
+        "updatedAt" : "2020-06-16T01:35:33.891Z",
+        "__v" : 0
+    }
+]

@@ -1,0 +1,75 @@
+{
+  "name": "todo-community",
+  "version": "1.0.0",
+  "description": "Api para un proyecto de tareas comunitarias con MongoDB, Express y NodeJS",
+  "main": "index.js",
+  "scripts": {
+    "start": "node ./server/index",
+    "clean": "rimraf api",
+    "transpile": "babel ./server-dev --out-dir server",
+    "build": "npm run clean && npm run transpile",
+    "dev": "npm run build && npm start",
+    "watch:dev": "nodemon",
+    "test": "jest"
+  },
+  "keywords": [
+    "Api",
+    "MongoDb",
+    "Express",
+    "NodeJS"
+  ],
+  "author": "Damuel Querales",
+  "license": "MIT",
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "body-parser": "^1.19.0",
+    "cloudinary": "^1.22.0",
+    "compression": "^1.7.4",
+    "cookie-parser": "^1.4.5",
+    "cors": "^2.8.5",
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
+    "helmet": "^3.22.1",
+    "jsonwebtoken": "^8.5.1",
+    "memory-cache": "^0.2.0",
+    "mongoose": "^5.9.18",
+    "morgan": "^1.10.0",
+    "multer": "^1.4.2"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.10.1",
+    "@babel/core": "^7.10.2",
+    "@babel/preset-env": "^7.10.2",
+    "dotenv": "^8.2.0",
+    "jest": "^26.0.1",
+    "mockingoose": "^2.13.2",
+    "nodemon": "^2.0.4",
+    "rimraf": "^3.0.2"
+  },
+  "nodemonConfig": {
+    "exec": "npm run dev",
+    "watch": [
+      "server-dev/*"
+    ],
+    "ignore": [
+      "**/__tests__/**",
+      "*.test.js",
+      "*.spec.js"
+    ]
+  },
+  "babel": {
+    "presets": [
+      [
+        "@babel/preset-env",
+        {
+          "targets": {
+            "node": "current"
+          }
+        }
+      ]
+    ]
+  },
+  "jest": {
+    "testEnvironment": "node"
+  }
+}
