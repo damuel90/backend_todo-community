@@ -89,10 +89,9 @@ const addCollaborator = async (projectId, userId) => {
   return false;
 };
 
-const changeToManager = async (projectId, creatorId, collaboratorId) => {
+const changeToManager = async (projectId, collaboratorId) => {
   const updatedProject = await _models.Project.updateOne({
     _id: projectId,
-    creator: creatorId,
     collaborators: collaboratorId
   }, {
     $push: {
@@ -111,10 +110,9 @@ const changeToManager = async (projectId, creatorId, collaboratorId) => {
   return false;
 };
 
-const changeToCollaborator = async (projectId, creatorId, collaboratorId) => {
+const changeToCollaborator = async (projectId, collaboratorId) => {
   const updatedProject = await _models.Project.updateOne({
     _id: projectId,
-    creator: creatorId,
     managers: collaboratorId
   }, {
     $push: {
@@ -133,10 +131,9 @@ const changeToCollaborator = async (projectId, creatorId, collaboratorId) => {
   return false;
 };
 
-const removeCollaborator = async (projectId, creatorId, collaboratorId) => {
+const removeCollaborator = async (projectId, collaboratorId) => {
   const updatedProject = await _models.Project.updateOne({
     _id: projectId,
-    creator: creatorId,
     $or: [{
       managers: collaboratorId
     }, {

@@ -1,5 +1,6 @@
 import { ProjectRepository, InvitationRepository } from '../repositories';
-import { showError } from '../../../helpers';
+import { isCreator } from './project.service';
+import { showError, verifyParams } from '../../../helpers';
 
 const checkInvitation = (invitations, receiver) => {
     for (const invited of invitations) {
@@ -8,6 +9,8 @@ const checkInvitation = (invitations, receiver) => {
                 return [true, 'Ya envió una invitación a este usuario'];
             } else if(invited.state == 'accepted'){
                 return [true, 'Este usuario ya aceptó la invitación a colaborar'];
+            } else {
+                return [true, 'Este usuario rechazó la invitación a colaborar'];
             }
             break;
         }
@@ -15,68 +18,64 @@ const checkInvitation = (invitations, receiver) => {
     return [false];
 };
 
+const validInvitation = async (invitationId, userId) => {
+    const invitation = await InvitationRepository.getById(invitationId);
+    if(!invitation){
+        return [false, 'La invitacion no existe o fue eliminada'];
+    }
+    const receiver = invitation.imReceiver(userId);
+    if(!receiver){
+        [false, 'No tiene las credenciales para realizar esta acción'];
+    }
+    if(invitation.state !== 'waiting'){
+        const state = invitation.state === 'accepted' ? 'aceptada' : 'rechazada';
+        return [false, `La invitación ya fue ${state}`];
+    }
+    return [true];
+};
+
 const create = async (invitation) => {
     const invitations = await InvitationRepository.getByProject(invitation.project);
-    const [ invited, message ] = checkInvitation(invitations);
+    const [ invited, message ] = checkInvitation(invitations, invitation.receiver);
     if(invited){
         throw showError(400, message);
     }
-    const project = await ProjectRepository.getById(invitation.project);
-    if(!project){
-        throw showError(500, 'El projecto no existe');
-    }
-    const creator = project.imCreator(invitation.emitter);
+    const [creator, creatorError] = await isCreator(invitation.project, invitation.emitter);
     if(!creator){
-        throw showError(500, 'No tiene las credenciales para realizar esta acción')
+        throw showError(500, creatorError)
     }
     return await InvitationRepository.create(invitation);
 };
 
 const getProjectInvitations = async (projectId, userId) => {
-    if(!projectId){
-        throw showError(400, 'No envió el id del proyecto')
+    const [exists, paramError] = verifyParams({ projectId, userId });
+    if(!exists){
+        throw showError(400, paramError);
     }
-    if(!userId){
-        throw showError(400, 'No envió el id del usuario')
-    }
-    const project = await ProjectRepository.getById(projectId);
-    if(!project){
-        throw showError(500, 'El projecto no existe');
-    }
-    const creator = project.imCreator(userId);
+    const [creator, creatorError] = await isCreator(projectId, userId);
     if(!creator){
-        throw showError(500, 'No tiene las credenciales para realizar esta acción')
+        throw showError(500, creatorError)
     }
     return await InvitationRepository.getByProject(projectId);
 };
 
 const getUserInvitations = async (userId) => {
     if(!userId){
-        throw showError(400, 'No envió el id del usuario')
+        throw showError(400, 'No envió el userId')
     }
     return await InvitationRepository.getByUser(userId);
 };
 
-const acceptInvitation = async (invitationId, collaboratorId, userId) => {
-    if(!invitationId){
-        throw showError(400, 'No envió el id de la invitación');
+const acceptInvitation = async (projectId, invitationId, userId) => {
+    const [exists, paramError] = verifyParams({ projectId, invitationId, userId });
+    if(!exists){
+        throw showError(400, paramError);
     }
-    if(!userId || !collaboratorId){
-        throw showError(400, 'No envió el id del usuario');
+    const [valid, invitationError] = await validInvitation(invitationId, userId);
+    if(!valid){
+        throw showError(500, invitationError);
     }
-    const invitation = await InvitationRepository.getById(invitationId);
-    if(!invitation){
-        throw showError(500, 'La invitacion no existe o fue eliminada');
-    }
-    const receiver = invitation.imReceiver(userId);
-    if(!receiver){
-        throw showError(500, 'No tiene las credenciales para realizar esta acción');
-    }
-    if(invitation.state !== 'waiting'){
-        const state = invitation.state === 'accepted' ? 'aceptada' : 'rechazada';
-        throw showError(500, `La invitación ya fue ${state}`);
-    }
-    const addedCollaborator = await ProjectRepository.addCollaborator(invitation.project, collaboratorId);
+    const addedCollaborator = await ProjectRepository.addCollaborator(projectId, userId);
     if(!addedCollaborator){
         throw showError(500, 'Ocurrió un error en el servidor');
     }
@@ -84,44 +83,25 @@ const acceptInvitation = async (invitationId, collaboratorId, userId) => {
 };
 
 const denyInvitation = async (invitationId, userId) => {
-    if(!invitationId){
-        throw showError(400, 'No envió el id de la invitación');
+    const [exists, paramError] = verifyParams({ invitationId, userId });
+    if(!exists){
+        throw showError(400, paramError);
     }
-    if(!userId){
-        throw showError(400, 'No envió el id del usuario');
-    }
-    const invitation = await InvitationRepository.getById(invitationId);
-    if(!invitation){
-        throw showError(500, 'La invitacion no existe o fue eliminada');
-    }
-    const receiver = invitation.imReceiver(userId);
-    if(!receiver){
-        throw showError(500, 'No tiene las credenciales para realizar esta acción');
-    }
-    if(invitation.state !== 'waiting'){
-        const state = invitation.state === 'accepted' ? 'aceptada' : 'rechazada';
-        throw showError(500, `La invitación ya fue ${state}`);
+    const [valid, invitationError] = await validInvitation(invitationId, userId);
+    if(!valid){
+        throw showError(500, invitationError);
     }
     return await InvitationRepository.update(invitationId, { state: 'denied' });
 };
 
-const remove = async (projectId, userId, invitationId) => {
-    if(!projectId){
-        throw showError(400, 'No envió el id del proyecto')
+const remove = async (projectId, invitationId, userId) => {
+    const [exists, paramError] = verifyParams({ projectId, invitationId, userId });
+    if(!exists){
+        throw showError(400, paramError);
     }
-    if(!userId){
-        throw showError(400, 'No envió el id del usuario')
-    }
-    if(!invitationId){
-        throw showError(400, 'No envió el id de la invitación')
-    }
-    const project = await ProjectRepository.getById(projectId);
-    if(!project){
-        throw showError(500, 'El projecto no existe');
-    }
-    const creator = project.imCreator(userId);
+    const [creator, creatorError] = await isCreator(projectId, userId);
     if(!creator){
-        throw showError(500, 'No tiene las credenciales para realizar esta acción')
+        throw showError(500, creatorError)
     }
     const deletedInvitation = await InvitationRepository.remove(invitationId);
     if(!deletedInvitation){

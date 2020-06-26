@@ -9,10 +9,10 @@ Object.defineProperty(exports, "ProjectRepository", {
     return _project.default;
   }
 });
-Object.defineProperty(exports, "TaskRepository", {
+Object.defineProperty(exports, "PanelRepository", {
   enumerable: true,
   get: function () {
-    return _task.default;
+    return _panel.default;
   }
 });
 Object.defineProperty(exports, "InvitationRepository", {
@@ -24,7 +24,7 @@ Object.defineProperty(exports, "InvitationRepository", {
 
 var _project = _interopRequireDefault(require("./project.repository"));
 
-var _task = _interopRequireDefault(require("./task.repository"));
+var _panel = _interopRequireDefault(require("./panel.repository"));
 
 var _invitation = _interopRequireDefault(require("./invitation.repository"));
 

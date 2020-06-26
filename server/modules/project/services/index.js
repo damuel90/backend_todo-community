@@ -9,10 +9,10 @@ Object.defineProperty(exports, "ProjectService", {
     return _project.default;
   }
 });
-Object.defineProperty(exports, "TaskService", {
+Object.defineProperty(exports, "PanelService", {
   enumerable: true,
   get: function () {
-    return _task.default;
+    return _panel.default;
   }
 });
 Object.defineProperty(exports, "InvitationService", {
@@ -24,7 +24,7 @@ Object.defineProperty(exports, "InvitationService", {
 
 var _project = _interopRequireDefault(require("./project.service"));
 
-var _task = _interopRequireDefault(require("./task.service"));
+var _panel = _interopRequireDefault(require("./panel.service"));
 
 var _invitation = _interopRequireDefault(require("./invitation.service"));
 

@@ -22,17 +22,13 @@ const signup = async (req, res) => {
     }
 
     const user = await _services.UserService.signup(body);
-    return res.status(201).send({
-      status: 201,
-      data: user
-    });
+    return res.status(201).send(user);
   } catch (error) {
     const {
       status = 500,
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
@@ -48,17 +44,13 @@ const signin = async (req, res) => {
       email,
       password
     });
-    return res.status(201).send({
-      status: 201,
-      data: user
-    });
+    return res.status(201).send(user);
   } catch (error) {
     const {
       status = 500,
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
@@ -75,7 +67,6 @@ const editAvatar = async (req, res) => {
       avatar
     });
     return res.status(201).send({
-      status: 201,
       avatar
     });
   } catch (error) {
@@ -84,7 +75,6 @@ const editAvatar = async (req, res) => {
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
@@ -102,7 +92,6 @@ const editFullname = async (req, res) => {
       fullName
     });
     return res.status(200).send({
-      status: 200,
       message: 'El nombre del usuario ha sido modificado con exito'
     });
   } catch (error) {
@@ -111,7 +100,6 @@ const editFullname = async (req, res) => {
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }

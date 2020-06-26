@@ -1,9 +1,9 @@
 import Project from './project.model';
-import Task from './task.model';
 import Invitation from './invitation.model';
+import Panel from './panel.model';
 
 export {
     Project,
-    Task,
-    Invitation
+    Invitation,
+    Panel
 };

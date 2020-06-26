@@ -9,10 +9,10 @@ Object.defineProperty(exports, "Project", {
     return _models.Project;
   }
 });
-Object.defineProperty(exports, "Task", {
+Object.defineProperty(exports, "Panel", {
   enumerable: true,
   get: function () {
-    return _models.Task;
+    return _models.Panel;
   }
 });
 Object.defineProperty(exports, "Invitation", {
@@ -27,10 +27,10 @@ Object.defineProperty(exports, "ProjectRepository", {
     return _repositories.ProjectRepository;
   }
 });
-Object.defineProperty(exports, "TaskRepository", {
+Object.defineProperty(exports, "PanelRepository", {
   enumerable: true,
   get: function () {
-    return _repositories.TaskRepository;
+    return _repositories.PanelRepository;
   }
 });
 Object.defineProperty(exports, "InvitationRepository", {
@@ -45,10 +45,10 @@ Object.defineProperty(exports, "ProjectService", {
     return _services.ProjectService;
   }
 });
-Object.defineProperty(exports, "TaskService", {
+Object.defineProperty(exports, "PanelService", {
   enumerable: true,
   get: function () {
-    return _services.TaskService;
+    return _services.PanelService;
   }
 });
 Object.defineProperty(exports, "InvitationService", {
@@ -63,10 +63,10 @@ Object.defineProperty(exports, "ProjectController", {
     return _controllers.ProjectController;
   }
 });
-Object.defineProperty(exports, "TaskController", {
+Object.defineProperty(exports, "PanelController", {
   enumerable: true,
   get: function () {
-    return _controllers.TaskController;
+    return _controllers.PanelController;
   }
 });
 Object.defineProperty(exports, "InvitationController", {
@@ -101,11 +101,15 @@ ProjectRouter.patch('/collaborator/up', _middlewares.auth, _controllers.ProjectC
 ProjectRouter.patch('/collaborator/down', _middlewares.auth, _controllers.ProjectController.changeToCollaborator);
 ProjectRouter.patch('/collaborator/delete', _middlewares.auth, _controllers.ProjectController.removeCollaborator);
 ProjectRouter.delete('/:projectId', _middlewares.auth, _controllers.ProjectController.remove);
-ProjectRouter.post('/task', _middlewares.auth, _controllers.TaskController.create);
-ProjectRouter.get('/task/:projectId', _middlewares.auth, _controllers.TaskController.getProjectTasks);
-ProjectRouter.patch('/task', _middlewares.auth, _controllers.TaskController.update);
-ProjectRouter.patch('/task/collaborator', _middlewares.auth, _controllers.TaskController.completedTask);
-ProjectRouter.delete('/task/delete', _middlewares.auth, _controllers.TaskController.remove);
+ProjectRouter.post('/panel', _middlewares.auth, _controllers.PanelController.create);
+ProjectRouter.get('/panel/:projectId', _middlewares.auth, _controllers.PanelController.getProjectPanels);
+ProjectRouter.patch('/panel', _middlewares.auth, _controllers.PanelController.update);
+ProjectRouter.patch('/panel/position', _middlewares.auth, _controllers.PanelController.changePosition);
+ProjectRouter.post('/panel/task', _middlewares.auth, _controllers.PanelController.addTask);
+ProjectRouter.patch('/panel/task', _middlewares.auth, _controllers.PanelController.updateTask);
+ProjectRouter.patch('/panel/task/change', _middlewares.auth, _controllers.PanelController.changePanel);
+ProjectRouter.delete('/panel/task', _middlewares.auth, _controllers.PanelController.removeTask);
+ProjectRouter.delete('/panel/delete', _middlewares.auth, _controllers.PanelController.remove);
 ProjectRouter.post('/invitation', _middlewares.auth, _controllers.InvitationController.create);
 ProjectRouter.get('/invitation', _middlewares.auth, _controllers.InvitationController.getMyInvitations);
 ProjectRouter.get('/invitation/:projectId', _middlewares.auth, _controllers.InvitationController.getProjectInvitations);

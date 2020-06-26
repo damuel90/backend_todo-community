@@ -9,10 +9,10 @@ Object.defineProperty(exports, "ProjectController", {
     return _project.default;
   }
 });
-Object.defineProperty(exports, "TaskController", {
+Object.defineProperty(exports, "PanelController", {
   enumerable: true,
   get: function () {
-    return _task.default;
+    return _panel.default;
   }
 });
 Object.defineProperty(exports, "InvitationController", {
@@ -24,7 +24,7 @@ Object.defineProperty(exports, "InvitationController", {
 
 var _project = _interopRequireDefault(require("./project.controller"));
 
-var _task = _interopRequireDefault(require("./task.controller"));
+var _panel = _interopRequireDefault(require("./panel.controller"));
 
 var _invitation = _interopRequireDefault(require("./invitation.controller"));
 

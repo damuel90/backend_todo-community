@@ -9,18 +9,14 @@ var _services = require("../services");
 
 const create = async (req, res) => {
   try {
-    let {
+    const {
       body,
       user: {
         userId
       }
     } = req;
-    body = { ...body,
-      creator: userId,
-      managers: [userId]
-    };
-    const createdProject = await _services.ProjectService.create(body);
-    return res.status(201).send(createdProject);
+    const createdPanel = await _services.PanelService.create(userId, body);
+    return res.status(201).send(createdPanel);
   } catch (error) {
     const {
       status = 500,
@@ -32,28 +28,16 @@ const create = async (req, res) => {
   }
 };
 
-const getPublicProjects = async (req, res) => {
+const getProjectPanels = async (req, res) => {
   try {
-    const publicProjects = await _services.ProjectService.getPublicProjects();
-    return res.status(201).send(publicProjects);
-  } catch (error) {
     const {
-      status = 500,
-      message = 'Ocurrió un error en el servidor'
-    } = error;
-    return res.status(status).send({
-      message
-    });
-  }
-};
-
-const getMyProjects = async (req, res) => {
-  try {
-    let {
       userId
     } = req.user;
-    const myProjects = await _services.ProjectService.getUserProjects(userId);
-    return res.status(201).send(myProjects);
+    const {
+      projectId
+    } = req.params;
+    const panels = await _services.PanelService.getProjectPanels(projectId, userId);
+    return res.status(201).send(panels);
   } catch (error) {
     const {
       status = 500,
@@ -72,11 +56,12 @@ const update = async (req, res) => {
     } = req.user;
     const {
       projectId,
+      panelId,
       ...data
     } = req.body;
-    await _services.ProjectService.update(projectId, userId, data);
+    await _services.PanelService.update(projectId, userId, panelId, data);
     return res.status(200).send({
-      message: 'El projecto se actualizó con exito'
+      message: 'El panel se actualizó con exito'
     });
   } catch (error) {
     const {
@@ -89,18 +74,20 @@ const update = async (req, res) => {
   }
 };
 
-const changeToManager = async (req, res) => {
+const changePosition = async (req, res) => {
   try {
     const {
       userId
     } = req.user;
     const {
       projectId,
-      collaboratorId
+      panelId,
+      startPos,
+      endPos
     } = req.body;
-    await _services.ProjectService.changeToManager(projectId, userId, collaboratorId);
+    await _services.PanelService.changePosition(projectId, userId, panelId, startPos, endPos);
     return res.status(200).send({
-      message: 'Ha dado credenciales de administrador a un colaborador'
+      message: 'El panel se actualizó con exito'
     });
   } catch (error) {
     const {
@@ -113,18 +100,19 @@ const changeToManager = async (req, res) => {
   }
 };
 
-const changeToCollaborator = async (req, res) => {
+const addTask = async (req, res) => {
   try {
     const {
       userId
     } = req.user;
     const {
       projectId,
-      collaboratorId
+      panelId,
+      ...task
     } = req.body;
-    await _services.ProjectService.changeToCollaborator(projectId, userId, collaboratorId);
-    return res.status(200).send({
-      message: 'Ha quitado las credenciales de administrador a un colaborador'
+    const createdtask = await _services.PanelService.addTask(projectId, userId, panelId, task);
+    return res.status(201).send({
+      task: createdtask
     });
   } catch (error) {
     const {
@@ -137,18 +125,71 @@ const changeToCollaborator = async (req, res) => {
   }
 };
 
-const removeCollaborator = async (req, res) => {
+const updateTask = async (req, res) => {
   try {
     const {
       userId
     } = req.user;
     const {
       projectId,
-      collaboratorId
+      panelId,
+      taskId,
+      ...data
     } = req.body;
-    await _services.ProjectService.removeCollaborator(projectId, userId, collaboratorId);
+    await _services.PanelService.updateTask(projectId, userId, panelId, taskId, data);
     return res.status(200).send({
-      message: 'Ha expulsado a un colaborador del proyecto'
+      message: 'La tarea se actualizó con exito'
+    });
+  } catch (error) {
+    const {
+      status = 500,
+      message = 'Ocurrió un error en el servidor'
+    } = error;
+    return res.status(status).send({
+      message
+    });
+  }
+};
+
+const removeTask = async (req, res) => {
+  try {
+    const {
+      userId
+    } = req.user;
+    const {
+      projectId,
+      panelId,
+      taskId
+    } = req.body;
+    await _services.PanelService.removeTask(projectId, userId, panelId, taskId);
+    return res.status(200).send({
+      message: 'La tarea se ha eliminado con exito'
+    });
+  } catch (error) {
+    const {
+      status = 500,
+      message = 'Ocurrió un error en el servidor'
+    } = error;
+    return res.status(status).send({
+      message
+    });
+  }
+};
+
+const changePanel = async (req, res) => {
+  try {
+    const {
+      userId
+    } = req.user;
+    const {
+      projectId,
+      panel1Id,
+      panel2Id,
+      taskId
+    } = req.body;
+    await _services.PanelService.changePanel(projectId, userId, panel1Id, panel2Id, taskId);
+    return res.status(200).send({
+      message: 'La tarea se actualizó con exito'
     });
   } catch (error) {
     const {
@@ -167,11 +208,13 @@ const remove = async (req, res) => {
       userId
     } = req.user;
     const {
-      projectId
-    } = req.params;
-    await _services.ProjectService.remove(projectId, userId);
+      projectId,
+      panelId,
+      panelPosition
+    } = req.body;
+    await _services.PanelService.remove(projectId, userId, panelId, panelPosition);
     return res.status(200).send({
-      message: 'Se ha eliminado el proyecto con exito'
+      message: 'El panel se ha eliminado con exito'
     });
   } catch (error) {
     const {
@@ -186,12 +229,13 @@ const remove = async (req, res) => {
 
 var _default = {
   create,
-  getPublicProjects,
-  getMyProjects,
+  getProjectPanels,
   update,
-  removeCollaborator,
-  changeToManager,
-  changeToCollaborator,
+  changePosition,
+  addTask,
+  updateTask,
+  removeTask,
+  changePanel,
   remove
 };
 exports.default = _default;

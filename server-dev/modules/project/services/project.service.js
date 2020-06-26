@@ -1,5 +1,29 @@
-import { ProjectRepository, TaskRepository, InvitationRepository } from '../repositories';
-import { showError } from '../../../helpers';
+import { ProjectRepository } from '../repositories';
+import { showError, verifyParams } from '../../../helpers';
+
+const isManager = async (projectId, userId) => {
+    const project = await ProjectRepository.getById(projectId);
+    if(!project){
+        return [false, 'El projecto no existe'];
+    }
+    const manager = project.imManager(userId);
+    if(!manager){
+        return [false, 'No tiene las credenciales para realizar esta acción'];
+    }
+    return [true];
+};
+
+const isCreator = async (projectId, userId) => {
+    const project = await ProjectRepository.getById(projectId);
+    if(!project){
+        return [false, 'El projecto no existe'];
+    }
+    const creator = project.imCreator(userId);
+    if(!creator){
+        return [false, 'No tiene las credenciales para realizar esta acción'];
+    }
+    return [true];
+};
 
 const create = async (project) => {
     return await ProjectRepository.create(project);
@@ -11,45 +35,33 @@ const getPublicProjects = async () => {
 
 const getUserProjects = async (userId) => {
     if(!userId){
-        throw showError(400, 'No envió el id del usuario')
+        throw showError(400, 'No envió el userId')
     }
     return await ProjectRepository.getByUser(userId);
 };
 
 const update = async (projectId, userId, data) => {
-    if(!userId){
-        throw showError(400, 'No envió el id del usuario')
+    const [exists, paramError] = verifyParams({ projectId, userId, data });
+    if(!exists){
+        throw showError(400, paramError);
     }
-    if(!projectId){
-        throw showError(400, 'No envió el id del projecto')
-    }
-    const project = await ProjectRepository.getById(projectId);
-    if(!project){
-        throw showError(500, 'El projecto no existe');
-    }
-    const manager = project.imManager(userId);
-    if(!manager){
-        throw showError(500, 'No tiene las credenciales para realizar esta acción')
+    const [manage, managerError] = await isManager(projectId, userId);
+    if(!manage){
+        throw showError(500, managerError)
     }
     return await ProjectRepository.update(projectId, data);
 };
 
 const changeToManager = async (projectId, userId, collaboratorId) => {
-    if(!userId || !collaboratorId){
-        throw showError(400, 'No envió el id del usuario');
+    const [exists, paramError] = verifyParams({ projectId, userId, collaboratorId });
+    if(!exists){
+        throw showError(400, paramError);
     }
-    if(!projectId){
-        throw showError(400, 'No envió el id del projecto');
-    }
-    const project = await ProjectRepository.getById(projectId);
-    if(!project){
-        throw showError(500, 'El projecto no existe');
-    }
-    const creator = project.imCreator(userId);
+    const [creator, creatorError] = await isCreator(projectId, userId);
     if(!creator){
-        throw showError(500, 'No tiene las credenciales para realizar esta acción')
+        throw showError(500, creatorError)
     }
-    const addedManager = await ProjectRepository.changeToManager(projectId, userId, collaboratorId);
+    const addedManager = await ProjectRepository.changeToManager(projectId, collaboratorId);
     if(!addedManager){
         throw showError(500, 'El usuario ya tiene credenciales de administrador');
     }
@@ -57,21 +69,15 @@ const changeToManager = async (projectId, userId, collaboratorId) => {
 };
 
 const changeToCollaborator = async (projectId, userId, collaboratorId) => {
-    if(!userId || !collaboratorId){
-        throw showError(400, 'No envió el id del usuario');
+    const [exists, paramError] = verifyParams({ projectId, userId, collaboratorId });
+    if(!exists){
+        throw showError(400, paramError);
     }
-    if(!projectId){
-        throw showError(400, 'No envió el id del projecto');
-    }
-    const project = await ProjectRepository.getById(projectId);
-    if(!project){
-        throw showError(500, 'El projecto no existe');
-    }
-    const creator = project.imCreator(userId);
+    const [creator, creatorError] = await isCreator(projectId, userId);
     if(!creator){
-        throw showError(500, 'No tiene las credenciales para realizar esta acción')
+        throw showError(500, creatorError)
     }
-    const addedCollaborator = await ProjectRepository.changeToCollaborator(projectId, userId, collaboratorId);
+    const addedCollaborator = await ProjectRepository.changeToCollaborator(projectId, collaboratorId);
     if(!addedCollaborator){
         throw showError(500, 'El usuario ya no tiene credenciales de administrador');
     }
@@ -79,21 +85,15 @@ const changeToCollaborator = async (projectId, userId, collaboratorId) => {
 };
 
 const removeCollaborator = async (projectId, userId, collaboratorId) => {
-    if(!userId || !collaboratorId){
-        throw showError(400, 'No envió el id del usuario')
+    const [exists, paramError] = verifyParams({ projectId, userId, collaboratorId });
+    if(!exists){
+        throw showError(400, paramError);
     }
-    if(!projectId){
-        throw showError(400, 'No envió el id del projecto')
-    }
-    const project = await ProjectRepository.getById(projectId);
-    if(!project){
-        throw showError(500, 'El projecto no existe');
-    }
-    const creator = project.imCreator(userId);
+    const [creator, creatorError] = await isCreator(projectId, userId);
     if(!creator){
-        throw showError(500, 'No tiene las credenciales para realizar esta acción')
+        throw showError(500, creatorError)
     }
-    const removedCollaborator = await ProjectRepository.removeCollaborator(projectId, userId, collaboratorId);
+    const removedCollaborator = await ProjectRepository.removeCollaborator(projectId, collaboratorId);
     if(!removedCollaborator){
         throw showError(500, 'El usuario ya no colabora en el proyecto');
     }
@@ -101,17 +101,20 @@ const removeCollaborator = async (projectId, userId, collaboratorId) => {
 };
 
 const remove = async (projectId, userId) => {
-    if(!userId){
-        throw showError(400, 'No envió el id del usuario')
-    }
-    if(!projectId){
-        throw showError(400, 'No envió el id del projecto')
+    const [exists, paramError] = verifyParams({ projectId, userId });
+    if(!exists){
+        throw showError(400, paramError);
     }
     const removedProject = await ProjectRepository.remove(projectId, userId);
     if(!removedProject){
-        throw showError(500, 'El proyecto no existe');
+        throw showError(500, 'El proyecto no existe o no tiene las credenciales para realizar la acción');
     }
     return removedProject;
+};
+
+export {
+    isManager,
+    isCreator
 };
 
 export default {

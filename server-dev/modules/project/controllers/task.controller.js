@@ -5,13 +5,10 @@ const create = async (req, res) => {
         const { body, user: { userId } } = req;
         const task = {...body, creator: userId};
         const createdTask = await TaskService.create(task);
-        return res.status(201).send({
-            status: 201,
-            data: createdTask
-        })
+        return res.status(201).send(createdTask)
     } catch (error) {
         const { status = 500, message = 'Ocurrió un error en el servidor' } = error;
-        return res.status(status).send({ status, message });
+        return res.status(status).send({ message });
     }
 };
 
@@ -20,13 +17,10 @@ const getProjectTasks = async (req, res) => {
         const { userId } = req.user;
         const { projectId } = req.params;
         const tasks = await TaskService.getProjectTasks(projectId, userId);
-        return res.status(201).send({
-            status: 201,
-            data: tasks
-        })
+        return res.status(201).send(tasks)
     } catch (error) {
         const { status = 500, message = 'Ocurrió un error en el servidor' } = error;
-        return res.status(status).send({ status, message });
+        return res.status(status).send({ message });
     }
 };
 
@@ -36,12 +30,11 @@ const update = async (req, res) => {
         const { projectId, taskId, ...data } = req.body;
         await TaskService.update(projectId, userId, taskId, data);
         return res.status(200).send({
-            status: 200,
             message: 'La tarea se actualizó con exito'
         })
     } catch (error) {
         const { status = 500, message = 'Ocurrió un error en el servidor' } = error;
-        return res.status(status).send({ status, message });
+        return res.status(status).send({ message });
     }
 };
 
@@ -51,12 +44,11 @@ const completedTask = async (req, res) => {
         const { taskId, completed } = req.body;
         await TaskService.completedTask(taskId, userId, completed);
         return res.status(200).send({
-            status: 200,
             message: 'La tarea se actualizó con exito'
         })
     } catch (error) {
         const { status = 500, message = 'Ocurrió un error en el servidor' } = error;
-        return res.status(status).send({ status, message });
+        return res.status(status).send({ message });
     }
 };
 
@@ -66,12 +58,11 @@ const remove = async (req, res) => {
         const { projectId, taskId } = req.body;
         await TaskService.remove(projectId, userId, taskId);
         return res.status(200).send({
-            status: 200,
             message: 'Se ha eliminado la tarea con exito'
         })
     } catch (error) {
         const { status = 500, message = 'Ocurrió un error en el servidor' } = error;
-        return res.status(status).send({ status, message });
+        return res.status(status).send({ message });
     }
 };
 

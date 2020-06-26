@@ -19,17 +19,13 @@ const create = async (req, res) => {
       creator: userId
     };
     const createdTask = await _services.TaskService.create(task);
-    return res.status(201).send({
-      status: 201,
-      data: createdTask
-    });
+    return res.status(201).send(createdTask);
   } catch (error) {
     const {
       status = 500,
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
@@ -44,17 +40,13 @@ const getProjectTasks = async (req, res) => {
       projectId
     } = req.params;
     const tasks = await _services.TaskService.getProjectTasks(projectId, userId);
-    return res.status(201).send({
-      status: 201,
-      data: tasks
-    });
+    return res.status(201).send(tasks);
   } catch (error) {
     const {
       status = 500,
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
@@ -72,7 +64,6 @@ const update = async (req, res) => {
     } = req.body;
     await _services.TaskService.update(projectId, userId, taskId, data);
     return res.status(200).send({
-      status: 200,
       message: 'La tarea se actualizó con exito'
     });
   } catch (error) {
@@ -81,7 +72,6 @@ const update = async (req, res) => {
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
@@ -98,7 +88,6 @@ const completedTask = async (req, res) => {
     } = req.body;
     await _services.TaskService.completedTask(taskId, userId, completed);
     return res.status(200).send({
-      status: 200,
       message: 'La tarea se actualizó con exito'
     });
   } catch (error) {
@@ -107,7 +96,6 @@ const completedTask = async (req, res) => {
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
@@ -124,7 +112,6 @@ const remove = async (req, res) => {
     } = req.body;
     await _services.TaskService.remove(projectId, userId, taskId);
     return res.status(200).send({
-      status: 200,
       message: 'Se ha eliminado la tarea con exito'
     });
   } catch (error) {
@@ -133,7 +120,6 @@ const remove = async (req, res) => {
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }

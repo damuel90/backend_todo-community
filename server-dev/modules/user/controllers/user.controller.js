@@ -8,10 +8,10 @@ const signup = async (req, res) => {
             body = {...body, avatar};
         }
         const user = await UserService.signup(body);
-        return res.status(201).send({ status: 201, data: user });
+        return res.status(201).send(user);
     } catch (error) {
         const { status = 500, message = 'Ocurrió un error en el servidor' } = error;
-        return res.status(status).send({ status, message });
+        return res.status(status).send({ message });
     }
 };
 
@@ -19,10 +19,10 @@ const signin = async (req, res) => {
     try {
         const { email, password } = req.body;
         const user = await UserService.signin({ email, password });
-        return res.status(201).send({ status: 201, data: user });
+        return res.status(201).send(user);
     } catch (error) {
         const { status = 500, message = 'Ocurrió un error en el servidor' } = error;
-        return res.status(status).send({ status, message });
+        return res.status(status).send({ message });
     }
 };
 
@@ -31,13 +31,10 @@ const editAvatar = async (req, res) => {
         const { user, file } = req;
         const avatar = await UploadService.file(file);
         await UserService.update(user.userId, { avatar });
-        return res.status(201).send({
-            status: 201,
-            avatar
-        });
+        return res.status(201).send({ avatar });
     } catch (error) {
         const { status = 500, message = 'Ocurrió un error en el servidor' } = error;
-        return res.status(status).send({ status, message });
+        return res.status(status).send({ message });
     }
 };
 
@@ -47,12 +44,11 @@ const editFullname = async (req, res) => {
         const { fullName } = req.query;
         await UserService.update(userId, { fullName });
         return res.status(200).send({
-            status: 200,
             message: 'El nombre del usuario ha sido modificado con exito'
         });
     } catch (error) {
         const { status = 500, message = 'Ocurrió un error en el servidor' } = error;
-        return res.status(status).send({ status, message });
+        return res.status(status).send({ message });
     }
 };
 

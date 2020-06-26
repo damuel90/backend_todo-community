@@ -1,9 +1,9 @@
 import ProjectRepository from './project.repository';
-import TaskRepository from './task.repository';
+import PanelRepository from './panel.repository';
 import InvitationRepository from './invitation.repository';
 
 export {
     ProjectRepository,
-    TaskRepository,
+    PanelRepository,
     InvitationRepository
 };

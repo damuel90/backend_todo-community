@@ -12,12 +12,11 @@ const create = async (req, res) => {
     const {
       userId
     } = req.user;
-    let body = { ...req.body,
+    let invitation = { ...req.body,
       emitter: userId
     };
-    await _services.InvitationService.create(body);
+    await _services.InvitationService.create(invitation);
     return res.status(200).send({
-      status: 200,
       message: 'La invitación a colaborar ha sido enviada'
     });
   } catch (error) {
@@ -26,7 +25,6 @@ const create = async (req, res) => {
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
@@ -41,17 +39,13 @@ const getProjectInvitations = async (req, res) => {
       projectId
     } = req.params;
     const invitations = await _services.InvitationService.getProjectInvitations(projectId, userId);
-    return res.status(201).send({
-      status: 201,
-      data: invitations
-    });
+    return res.status(201).send(invitations);
   } catch (error) {
     const {
       status = 500,
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
@@ -63,17 +57,13 @@ const getMyInvitations = async (req, res) => {
       userId
     } = req.user;
     const myInvitations = await _services.InvitationService.getUserInvitations(userId);
-    return res.status(201).send({
-      status: 201,
-      data: myInvitations
-    });
+    return res.status(201).send(myInvitations);
   } catch (error) {
     const {
       status = 500,
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
@@ -85,12 +75,11 @@ const acceptInvitation = async (req, res) => {
       userId
     } = req.user;
     const {
-      invitationId,
-      collaboratorId
+      projectId,
+      invitationId
     } = req.body;
-    await _services.InvitationService.acceptInvitation(invitationId, collaboratorId, userId);
+    await _services.InvitationService.acceptInvitation(projectId, invitationId, userId);
     return res.status(200).send({
-      status: 200,
       message: 'Se ha unido a colaborar'
     });
   } catch (error) {
@@ -99,7 +88,6 @@ const acceptInvitation = async (req, res) => {
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
@@ -115,7 +103,6 @@ const denyInvitation = async (req, res) => {
     } = req.body;
     await _services.InvitationService.denyInvitation(invitationId, userId);
     return res.status(200).send({
-      status: 200,
       message: 'ha rechazador unirse a colaborar'
     });
   } catch (error) {
@@ -124,7 +111,6 @@ const denyInvitation = async (req, res) => {
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
@@ -139,9 +125,8 @@ const remove = async (req, res) => {
       projectId,
       invitationId
     } = req.body;
-    await _services.InvitationService.remove(projectId, userId, invitationId);
+    await _services.InvitationService.remove(projectId, invitationId, userId);
     return res.status(200).send({
-      status: 200,
       message: 'Se ha eliminado la invitación con exito'
     });
   } catch (error) {
@@ -150,7 +135,6 @@ const remove = async (req, res) => {
       message = 'Ocurrió un error en el servidor'
     } = error;
     return res.status(status).send({
-      status,
       message
     });
   }
