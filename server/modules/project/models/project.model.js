@@ -13,13 +13,17 @@ const ProjectSchema = new _mongoose.Schema({
     lowercase: true,
     required: [true, 'es requerido']
   },
-  decription: {
+  description: {
     type: String
   },
   type: {
     type: String,
     required: [true, 'es requerido'],
     enum: ['public', 'private']
+  },
+  theme: {
+    type: Number,
+    default: 0
   },
   creator: {
     type: _mongoose.Schema.Types.ObjectId,
