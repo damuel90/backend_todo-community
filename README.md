@@ -35,11 +35,11 @@
 | `/project/panel/delete` | DELETE | Elimina un panel de un proyecto, solo válido para usuarios administradores, se debe enviar por data los siguiente campos (projectId, panelId y panelPosition), la petición retorna un status 200 y un mensaje (message) |
 | `/project/invitation` | POST | Crea una invitación para un proyecto con los siguientes campos: emitter (el id del creador), receiver (el id del invitado), project (el id del proyecto) enviado por data, válido para usuarios creadores, la petición retorna un status 200 y un mensaje (message) |
 | `/project/invitation` | GET | Obtiene todos las invitaciones de un usuario, válido para usuarios autenticado, la petición retorna un status 201 y una lista data con las invitaciones |
-| `/project/invitation/:projectId` | GET | Obtiene todos las invitaciones de un proyecto, se debe enviar el id del proyecto por params, válido para usuarios creadores, la petición retorna un status 201 y una lista data con las invitaciones |
+| `/project/invitation/:projectId` | GET | Obtiene todos las invitaciones de un proyecto, se debe enviar el id del proyecto por query, válido para usuarios creadores, la petición retorna un status 201 y una lista data con las invitaciones |
 | `/project/invitation/accept` | PATCH | Acepta una invitación a colaborar, solo válido para usuarios autenticado (invitado), se debe enviar por data los siguiente campos (invitationId y projectId), la petición retorna un status 200 y un mensaje (message) |
 | `/project/invitation/deny` | PATCH | Rechaza una invitación a colaborar, solo válido para usuarios autenticado (invitado), se debe enviar por data el campo invitationId, la petición retorna un status 200 y un mensaje (message) |
 | `/project/invitation/delete` | DELETE | Elimina una invitacio de un proyecto, solo válido para usuarios creadores, se debe enviar por data los siguiente campos (projectId, invitationId), la petición retorna un status 200 y un mensaje (message) |
-| `/project/:projectId` | DELETE | Elimina un proyecto, solo válido para usuarios creadores, se debe enviar el id del proyecto por params, la petición retorna un status 200 y un mensaje (message) |
+| `/project/:projectId` | DELETE | Elimina un proyecto, solo válido para usuarios creadores, se debe enviar el id del proyecto por query, la petición retorna un status 200 y un mensaje (message) |
 
 ## Como probar
 
